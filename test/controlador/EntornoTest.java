@@ -2,21 +2,16 @@ package controlador;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
+/**
+ * Test sencillo para verificar que el entorno de JUnit funciona.
+ * No usa Mockito para evitar dependencias adicionales.
+ */
 public class EntornoTest {
 
     @Test
     public void entornoFunciona() {
-        // Usamos Mockito para crear un mock sencillo
-        Runnable r = mock(Runnable.class);
-
-        r.run();
-
-        // Verificamos que se llamó una vez
-        verify(r).run();
-
-        // Y hacemos una aserción simple
+        // Prueba mínima: si esto pasa, JUnit está bien configurado
         assertEquals(4, 2 + 2);
     }
 }
