@@ -1,13 +1,15 @@
 package controlador;
 
-import modelo.*;
+import modelo.Ingrediente;
+import modelo.Pedido;
+import modelo.Pizza;
 import servicio.PedidoFacade;
 import servicio.PizzaFactory;
 import servicio.PizzaBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
-import servicio.MetodoPagoStrategy;
+
 import vista.BienvenidaVista;
 import vista.CocinaVista;
 import vista.InicioVista;
@@ -46,7 +48,9 @@ public class PedidoControlador {
 
     private final List<Pizza> productosSeleccionados = new ArrayList<>();
 
-    // Constructor principal, usado por la aplicación con vistas Swing
+    /**
+     * Constructor normal de la aplicación: recibe todas las vistas Swing.
+     */
     public PedidoControlador(BienvenidaVista bv,
                              TipoConsumoPagoVista cv,
                              InicioVista iv,
@@ -65,24 +69,22 @@ public class PedidoControlador {
         this.pizzaBuilder = builder;
         this.pedidoFacade = facade;
 
-        bv.setControlador(this);
-        cv.setControlador(this);
-        iv.setControlador(this);
-        pv.setControlador(this);
-        cocv.setControlador(this);
+        // Solo registramos el controlador si la vista no es null
+        if (bv != null) bv.setControlador(this);
+        if (cv != null) cv.setControlador(this);
+        if (iv != null) iv.setControlador(this);
+        if (pv != null) pv.setControlador(this);
+        if (cocv != null) cocv.setControlador(this);
     }
 
-    // Constructor alternativo sin vistas: pensado para pruebas unitarias / entornos headless (CI)
-    public PedidoControlador(PizzaFactory factory, PizzaBuilder builder, PedidoFacade facade) {
-        this.bienvenidaVista = null;
-        this.consumoVista = null;
-        this.inicioVista = null;
-        this.pagoVista = null;
-        this.cocinaVista = null;
-
-        this.pizzaFactory = factory;
-        this.pizzaBuilder = builder;
-        this.pedidoFacade = facade;
+    /**
+     * Constructor especial para PRUEBAS (sin vistas Swing).
+     * En los tests de JUnit usaremos este.
+     */
+    public PedidoControlador(PizzaFactory factory,
+                             PizzaBuilder builder,
+                             PedidoFacade facade) {
+        this(null, null, null, null, null, factory, builder, facade);
     }
 
     public void comenzarPedido() {
@@ -145,6 +147,7 @@ public class PedidoControlador {
         builder.agregarIngredientesExtras(ingredientes);
         pizzaActual = builder.build();
 
+        // En tests inicioVista será null, así evitamos tocar Swing.
         if (inicioVista != null) {
             inicioVista.actualizarPrecioTotalEnVista(pizzaActual);
         }
@@ -157,20 +160,13 @@ public class PedidoControlador {
     private boolean esIngredienteBase(String nombrePizza, String nombreIngrediente) {
         switch (nombrePizza) {
             case "Margarita":
-                return nombreIngrediente.equals("Queso")
-                        || nombreIngrediente.equals("Albahaca")
-                        || nombreIngrediente.equals("Tomate");
+                return nombreIngrediente.equals("Queso") || nombreIngrediente.equals("Albahaca") || nombreIngrediente.equals("Tomate");
             case "Hawaiana":
-                return nombreIngrediente.equals("Queso")
-                        || nombreIngrediente.equals("Jamón")
-                        || nombreIngrediente.equals("Piña");
+                return nombreIngrediente.equals("Queso") || nombreIngrediente.equals("Jamón") || nombreIngrediente.equals("Piña");
             case "Mozzarella":
-                return nombreIngrediente.equals("Queso Mozzarella")
-                        || nombreIngrediente.equals("Tomate");
+                return nombreIngrediente.equals("Queso Mozzarella") || nombreIngrediente.equals("Tomate");
             case "Americana":
-                return nombreIngrediente.equals("Queso")
-                        || nombreIngrediente.equals("Salchicha")
-                        || nombreIngrediente.equals("Tocino");
+                return nombreIngrediente.equals("Queso") || nombreIngrediente.equals("Salchicha") || nombreIngrediente.equals("Tocino");
             default:
                 return false;
         }
@@ -208,8 +204,9 @@ public class PedidoControlador {
     public double calcularTotal(String tipoPizza, String tamanio, List<Ingrediente> seleccionados, int cantidad) {
         Pizza pizza = pizzaFactory.crearPizza(tipoPizza, tamanio, "Clásica");
         for (Ingrediente ing : seleccionados) {
-            boolean yaIncluido = pizza.getIngredientesBase().stream()
-                    .anyMatch(base -> base.getNombre().equalsIgnoreCase(ing.getNombre()));
+            boolean yaIncluido = pizza.getIngredientesBase().stream().anyMatch(
+                    base -> base.getNombre().equalsIgnoreCase(ing.getNombre())
+            );
             if (!yaIncluido) pizza.agregarIngredienteExtra(ing);
         }
         return pizza.getPrecio() * cantidad;
@@ -313,7 +310,8 @@ public class PedidoControlador {
     }
 
     private void guardarComprobanteTxt(Pedido pedido) {
-        try (java.io.PrintWriter out = new java.io.PrintWriter("comprobante_" + pedido.getId() + ".txt")) {
+        try (java.io.PrintWriter out =
+                     new java.io.PrintWriter("comprobante_" + pedido.getId() + ".txt")) {
             out.println("--- Comprobante de Pedido PizzaLab ---");
             out.println("ID: " + pedido.getId());
             out.println("Pizza: " + pedido.getNombrePizza());
@@ -332,10 +330,3 @@ public class PedidoControlador {
         }
     }
 }
-
-/*PedidoControlador es el corazon del modulo de pedidos, enlazando la vista con la logica de creacion de pizzas y procesamiento de ordenes.
-    • Aplica Factory para generar pizzas base prediseñadas.
-    • Utiliza Builder para permitir la personalización flexible de pizzas.
-    • Se apoya en una Facade (PedidoFacade) para simplificar la operación completa del pedido, incluyendo 
-validaciones, calculo de total, seleccion de metodo de pago y generacion de comprobante. Su implementacion mejora la experiencia 
-del cliente al hacer el proceso de pedido fluido, claro y autonomo, respondiendo directamente a los problemas planteados en la definicion del proyecto.*/
