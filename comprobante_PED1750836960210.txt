@@ -1,0 +1,13 @@
+--- Comprobante de Pedido PizzaLab ---
+ID: PED1750836960210
+Pizza: Margarita
+Tamaño: Individual
+Masa: 
+Ingredientes: []
+Cantidad: 1
+Tipo de consumo: LOCAL
+Método de pago: BILLETERA
+Tipo comprobante: BOLETA
+Documento: 73701648
+Total: S/ 0.00
+--------------------------------------

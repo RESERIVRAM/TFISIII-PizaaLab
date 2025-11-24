@@ -1,0 +1,13 @@
+--- Comprobante de Pedido PizzaLab ---
+ID: PED1750835540414
+Pizza: Margarita
+Tamaño: Mediana
+Masa: 
+Ingredientes: [Jamón (S/ 1.99), Pimiento (S/ 0.8)]
+Cantidad: 1
+Tipo de consumo: LOCAL
+Método de pago: BILLETERA
+Tipo comprobante: BOLETA
+Documento: 73701648
+Total: S/ 0.00
+--------------------------------------

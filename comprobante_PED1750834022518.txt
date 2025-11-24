@@ -1,0 +1,13 @@
+--- Comprobante de Pedido PizzaLab ---
+ID: PED1750834022518
+Pizza: Margarita
+Tamaño: Individual
+Masa: 
+Ingredientes: [Jamón (S/ 1.99), Peperoni (S/ 1.99), Pimiento (S/ 0.8), Tomate (S/ 0.5), Coca-Cola (S/ 3.5), Inca Kola (S/ 3.5)]
+Cantidad: 1
+Tipo de consumo: LOCAL
+Método de pago: BILLETERA
+Tipo comprobante: BOLETA
+Documento: 73701648
+Total: S/ 0.0
+--------------------------------------
