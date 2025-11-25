@@ -18,7 +18,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '22'   # Puedes cambiar a '17' si tu profe lo pide
+          java-version: '22'   
 
       - name: Instalar Ant
         run: |
